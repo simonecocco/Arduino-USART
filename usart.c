@@ -1,7 +1,8 @@
 #include "usart.h"
 
 unsigned short readserial(){
-    return UDR0|((UCSR0B&(1<<RXB80))>>1);
+    unsigned short b8=((UCSR0B&(1<<RXB80))<<7);
+    return b8|UDR0;
 }
 
 char isbyteavaiable(){
