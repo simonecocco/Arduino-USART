@@ -1,0 +1,120 @@
+True    KEYWORD2
+False    KEYWORD2
+
+STATUS_BUFFER    KEYWORD2
+STATUS_FRAMEERROR    KEYWORD2
+STATUS_LOSTBYTE    KEYWORD2
+STATUS_PARITYERROR    KEYWORD2
+STATUS_DOUBLESPEED    KEYWORD2
+STATUS_MULTIPROCESSOR    KEYWORD2
+
+MODE_ASYNC    KEYWORD2
+MODE_SYNC    KEYWORD2
+MODE_MASTER_SPI    KEYWORD2
+
+PARITY_DISABLE    KEYWORD2
+PARITY_EVEN    KEYWORD2
+PARITY_ODD    KEYWORD2
+
+DIM_5b    KEYWORD2
+DIM_6b    KEYWORD2
+DIM_7b    KEYWORD2
+DIM_8b    KEYWORD2
+DIM_9b    KEYWORD2
+
+BPS_2400    KEYWORD2
+BPS_4800    KEYWORD2
+BPS_9600    KEYWORD2
+BPS_14400    KEYWORD2
+BPS_19200    KEYWORD2
+BPS_28800    KEYWORD2
+BPS_38400    KEYWORD2
+BPS_57600    KEYWORD2
+BPS_76800    KEYWORD2
+BPS_115200    KEYWORD2
+BPS_230400    KEYWORD2
+BPS_250000    KEYWORD2
+
+STOPBIT_1    KEYWORD2
+STOPBIT_2    KEYWORD2
+
+TO_DOWN    KEYWORD2
+TO_UP    KEYWORD2
+
+USART   KEYWORD1
+usart   KEYWORD1
+
+readserial0   KEYWORD1
+readserial1   KEYWORD1
+readserial2   KEYWORD1
+readserial3   KEYWORD1
+
+isbyteavaiable0   KEYWORD1
+isbyteavaiable1   KEYWORD1
+isbyteavaiable2   KEYWORD1
+isbyteavaiable3   KEYWORD1
+
+issended0   KEYWORD1
+issended1   KEYWORD1
+issended2   KEYWORD1
+issended3   KEYWORD1
+
+getusartstatus0   KEYWORD1
+getusartstatus1   KEYWORD1
+getusartstatus2   KEYWORD1
+getusartstatus3   KEYWORD1
+
+setrx0   KEYWORD1
+setrx1   KEYWORD1
+setrx2   KEYWORD1
+setrx3   KEYWORD1
+
+settx0   KEYWORD1
+settx1   KEYWORD1
+settx2   KEYWORD1
+settx3   KEYWORD1
+
+onemptybuffer0   KEYWORD1
+onemptybuffer1   KEYWORD1
+onemptybuffer2   KEYWORD1
+onemptybuffer3   KEYWORD1
+
+writeserial0   KEYWORD1
+writeserial1   KEYWORD1
+writeserial2   KEYWORD1
+writeserial3   KEYWORD1
+
+usartmode0   KEYWORD1
+usartmode1   KEYWORD1
+usartmode2   KEYWORD1
+usartmode3   KEYWORD1
+
+paritymode0   KEYWORD1
+paritymode1   KEYWORD1
+paritymode2   KEYWORD1
+paritymode3   KEYWORD1
+
+use2stopbit0   KEYWORD1
+use2stopbit1   KEYWORD1
+use2stopbit2   KEYWORD1
+use2stopbit3   KEYWORD1
+
+dimensionofchar0   KEYWORD1
+dimensionofchar1   KEYWORD1
+dimensionofchar2   KEYWORD1
+dimensionofchar3   KEYWORD1
+
+clockpolarity0   KEYWORD1
+clockpolarity1   KEYWORD1
+clockpolarity2   KEYWORD1
+clockpolarity3   KEYWORD1
+
+setbaudrate0   KEYWORD1
+setbaudrate1   KEYWORD1
+setbaudrate2   KEYWORD1
+setbaudrate3   KEYWORD1
+
+setserial0   KEYWORD1
+setserial1   KEYWORD1
+setserial2   KEYWORD1
+setserial3   KEYWORD1

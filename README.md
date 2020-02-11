@@ -1,16 +1,9 @@
 # Arduino-USART
-##### Libreria per la gestione della porta seriale 0
+##### Libreria per la gestione delle porte seriali.
+#### Con N si intende il numero della porta desiderata. Solitamente è una ma su alcune schede come Arduino MEGA se ne possono trovare fino a 4 (0,1,2,3)
 
 # Uso:
-
 ### Importazione:
-
-###### se si trova nella cartella del progetto
-```c
-#include "usart.h"
-```
-
-###### se si trova nella cartella delle librerie di arduino
 ```c
 #include <usart.h>
 ```
@@ -20,11 +13,11 @@
 ###### legge fino a 9bit di dato
 * Sintassi 
 ```c
-unsigned short readserial()
+unsigned short readserialN()
 ```
 * Codice
 ```c
-unsigned short rxdata=readserial();
+unsigned short rxdata=readserial0();
 ```
 ***
 
@@ -32,11 +25,11 @@ unsigned short rxdata=readserial();
 ###### Verifica che il registro di ricezione non sia vuoto
 * Sintassi
 ```c
-char isbyteavaiable()
+char isbyteavaiableN()
 ```
 * Codice
 ```c
-if(isbyteavaiable()){
+if(isbyteavaiable0()){
     //some code
 }else{
     //todo
@@ -48,11 +41,11 @@ if(isbyteavaiable()){
 ###### La trasmissione del dato è stata completata
 * Sintassi
 ```c
-char issended()
+char issendedN()
 ```
 * Codice
 ```c
-if(issended()){
+if(issended0()){
     //some code
 }else{
     //todo
@@ -64,7 +57,7 @@ if(issended()){
 ###### Controlla 6 stati differenti. Può rendere True (1) o False (0)
 * Sintassi
 ```c
-char getusartstatus(char status)
+char getusartstatusN(char status)
 ```
 Costante | Valore | Descrizione
 --- | :---: | ---
@@ -77,20 +70,25 @@ STATUS_MULTIPROCESSOR | 5 | Metodo di comunicazione multiprocessore
 
 * Codice
 ```c
-char framerror=getusartstatus(STATUS_FRAMEERROR);
+char framerror=getusartstatus0(STATUS_FRAMEERROR);
 ```
 ***
 
 ### Configura la ricezione
-###### Abilita il pin0 alla ricezione dei dati e abilità l'interrupt
+###### Abilita il pin dedicato alla ricezione dei dati e abilità l'interrupt
 * Sintassi
 ```c
-void setrx0(char enablepin,char enableinterrupt)
+void setrxN(char enablepin,char enableinterrupt)
+
+//interrupt
+ISR(USARTN_RX_vect){
+    //todo
+}
 ```
 enablepin | Descrizione
 :---:|:---:
-False (0) | disabilita il pin0
-True (1) | abilita il pin0
+False (0) | disabilita il pin dedicato
+True (1) | abilita il pin dedicato
 
 enableinterrupt | Descrizione
 :---:|:---:
@@ -115,15 +113,20 @@ ISR(USART0_RX_vect){
 ***
 
 ### Configura la trasmissione
-###### Abilita il pin1 alla trasmissione dei dati e abilità l'interrupt
+###### Abilita il pin dedicato alla trasmissione dei dati e abilità l'interrupt
 * Sintassi
 ```c
-void settx0(char enablepin,char enableinterrupt)
+void settxN(char enablepin,char enableinterrupt)
+
+//interrupt
+ISR(USARTN_TX_vect){
+    //todo
+}
 ```
 enablepin | Descrizione
 :---:|:---:
-False (0) | disabilita il pin1
-True (1) | abilita il pin1
+False (0) | disabilita il pin dedicato
+True (1) | abilita il pin dedicato
 
 enableinterrupt | Descrizione
 :---:|:---:
@@ -151,7 +154,12 @@ ISR(USART0_TX_vect){
 ###### Quando il dato sta per essere inviato e si trova sullo shift register
 * Sintassi
 ```c
-void onemptybuffer(char enableinterrupt)
+void onemptybufferN(char enableinterrupt)
+
+//interrupt
+ISR(USARTN_UDRE_vect){
+    //todo
+}
 ```
 * Codice `main.ino`
 ```c
@@ -159,7 +167,7 @@ void onemptybuffer(char enableinterrupt)
 
 void setup(){
     //some code
-    onemptybuffer(True);
+    onemptybuffer0(True);
     //some code
 }
 ```
@@ -175,19 +183,19 @@ ISR(USART0_UDRE_vect){
 ###### E' possibile scrivere fino a un massimo di 9bit
 * Sintassi
 ```c
-void writeserial(unsigned short data)
+void writeserialN(unsigned short data)
 ```
 * Codice
 ```c
 unsigned short MAX_9b=511;
-writeserial(MAX_9b);
+writeserial0(MAX_9b);
 ```
 ***
 
-### Modalità della USART0
+### Modalità della USART
 * Sintassi
 ```c
-void usartmode(char mode)
+void usartmodeN(char mode)
 ```
 Costante|Valore|Descrizione
 ---|:---:|---
@@ -196,23 +204,23 @@ MODE_SYNC|1|Modalità sincrona
 MODE_MASTER_SPI|2|Modalità master SPI
 * Codice 
 ```c
-usartmode(MODE_ASYNC);
+usartmode0(MODE_ASYNC);
 ```
 ***
 
 ### Parità
 * Sintassi
 ```c
-void paritymode(char mode)
+void paritymodeN(char mode)
 ```
 Costante|Valore|Descrizione
 ---|:---:|---
 PARITY_DISABLE|0|Parità non abilitata
-PARITY_PAIR|1|Parità pari
+PARITY_EVEN|1|Parità pari
 PARITY_ODD|2|Parità dispari
 * Codice
 ```c
-paritymode(PARITY_DISABLE);
+paritymode0(PARITY_DISABLE);
 ```
 ***
 
@@ -220,7 +228,7 @@ paritymode(PARITY_DISABLE);
 ###### Imposta quanti bit di stop devono esserci
 * Sintassi
 ```c
-void use2stopbit(char use)
+void use2stopbitN(char use)
 ```
 Costante|Valore|Descrizione
 ---|:---:|---
@@ -228,7 +236,7 @@ STOPBIT_1|0|Necessita solo di un bit di stop
 STOPBIT_2|1|Necessita di due bit di stop
 * Codice
 ```c
-use2stopbit(STOPBIT_1);
+use2stopbit0(STOPBIT_1);
 ```
 ***
 
@@ -236,7 +244,7 @@ use2stopbit(STOPBIT_1);
 ###### Dimensione del dato in bit. Minimo 5, massimo 9
 * Sintassi
 ```c
-void dimensionofchar(char dim)
+void dimensionofcharN(char dim)
 ```
 Costante|Valore|Dimensione
 ---|:---:|---
@@ -247,7 +255,7 @@ DIM_8b|3|8 bit
 DIM_9b|4|9 bit
 * Codice
 ```c
-dimensionofchar(DIM_8b);
+dimensionofchar0(DIM_8b);
 ```
 ***
 
@@ -255,7 +263,7 @@ dimensionofchar(DIM_8b);
 ###### Indica quando campionare il bit
 * Sintassi
 ```c
-void clockpolarity(char polarity)
+void clockpolarityN(char polarity)
 ```
 Costante|Valore|Descrizione
 ---|:---:|---
@@ -263,7 +271,7 @@ TO_DOWN|0|Campiona quando il clock è in fronte di discesa
 TO_UP|1|Campiona quando il clock è in fronte di salita
 * Codice
 ```c
-clockpolarity(TO_DOWN);
+clockpolarity0(TO_DOWN);
 ```
 ***
 
@@ -271,7 +279,7 @@ clockpolarity(TO_DOWN);
 ###### Quanti bit al secondo verranno trasmessi
 * Sintassi
 ```c
-void setbaudrate(char bps,char speedx2);
+void setbaudrateN(char bps,char speedx2);
 ```
 Costante (bps)|Valore|Velocità (speedx2=0)|Velocità (speedx1=1)
 ---|:---:|:---:|:---:
@@ -289,7 +297,7 @@ BPS_230400|10|230.4Kb/s|460.8Kb/s
 BPS_250000|11|250Kb/s|500Kb/s
 * Codice
 ```c
-setbaudrate(BPS_9600,False);
+setbaudrate0(BPS_9600,False);
 ```
 ***
 
@@ -304,22 +312,24 @@ typedef struct USART{
     char dimension;
     char baudrate;
     char doublespeed;
+    char polarity;
     char rx[2];
     char tx[2];
 } usart;
 
-void setserial0(usart *config)
+void setserialN(usart *config)
 ```
 usart param|Codice corrispondente
 ---|---
-mode|`usartmode(usart->mode)`
-parity|`paritymode(usart->parity)`
-stopbit|`use2stopbit(usart->stopbit)`
-dimension|`dimensionofchar(usart->dimension)`
-baudrate|`setbaudrate(usart->baudrate,usart->doublespeed)`
-doublespeed|`setbaudrate(usart->baudrate,usart->doublespeed)`
-rx[2]|`setrx0(usart->rx[0],usart->[1])`
-tx[2]|`settx0(usart->tx[0],usart->[1])`
+mode|`usartmodeN(usart->mode)`
+parity|`paritymodeN(usart->parity)`
+stopbit|`use2stopbitN(usart->stopbit)`
+dimension|`dimensionofcharN(usart->dimension)`
+baudrate|`setbaudrateN(usart->baudrate,usart->doublespeed)`
+doublespeed|`setbaudrateN(usart->baudrate,usart->doublespeed)`
+polarity|`clockpolarityN(usart->polarity)`
+rx[2]|`setrxN(usart->rx[0],usart->[1])`
+tx[2]|`settxN(usart->tx[0],usart->[1])`
 * Codice (utilizzando `malloc`)
 ```c
 #include <stdlib.h>
@@ -332,6 +342,7 @@ config->stopbit=STOPBIT_1;
 config->dimension=DIM_8b;
 config->baudrate=BPS_9600;
 config->doublespeed=False;
+config->polarity=TO_DOWN;
 config->rx[0]=True;
 config->rx[1]=True;
 config->tx[0]=True;
@@ -349,7 +360,8 @@ usart config=(usart){
     .stopbit=STOPBIT_1,
     .dimension=DIM_8b,
     .baudrate=BPS_9600,
-    .doublespeed=False
+    .doublespeed=False,
+    .polarity=TO_DOWN
 };
 config.rx[0]=True;
 config.rx[1]=True;
