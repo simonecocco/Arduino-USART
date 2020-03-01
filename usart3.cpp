@@ -1,11 +1,5 @@
 #include "usart.h"
 //Serial3
-
-unsigned short readserial3(){
-    unsigned short b8=((UCSR3B&(1<<RXB83))<<7);
-    return b8|UDR3;
-}
-
 char isbyteavaiable3(){
     return (UCSR3A&0B10000000)>>RXC3;
 }
@@ -68,42 +62,6 @@ void writeserial3(unsigned short data){
     unsigned char bit=(data>>8);
     if(bit)UCSR3B|=(1<<TXB83);
     else UCSR3B&=~(1<<TXB83);
-}
-
-void usartmode3(char mode){
-    switch (mode){
-        case MODE_ASYNC:
-            UCSR3C&=~((1<<UMSEL31)|(1<<UMSEL30));
-            return;
-        case MODE_SYNC:
-            UCSR3C&=~(1<<UMSEL31);
-            UCSR3C|=(1<<UMSEL30);
-            return;
-        case MODE_MASTER_SPI:
-            UCSR3C|=((1<<UMSEL31)|(1<<UMSEL30));
-            return;
-        default: return;
-    }
-}
-
-void paritymode3(char mode){
-    switch (mode){
-        case PARITY_DISABLE:
-            UCSR3C&=~((1<<UPM31)|(1<<UPM30));
-            return;
-        case PARITY_EVEN:
-            UCSR3C&=~(1<<UPM30);
-            UCSR3C|=(1<<UPM31);
-            return;
-        case PARITY_ODD:
-            UCSR3C|=((1<<UPM31)|(1<<UPM30));
-            return;
-        default: return;
-    }
-}
-
-void use2stopbit3(char use){
-    UCSR3C=(use?UCSR3C|(1<<USBS3):UCSR3C&~(1<<USBS3));
 }
 
 void dimensionofchar3(char dim){

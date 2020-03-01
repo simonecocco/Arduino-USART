@@ -1,11 +1,6 @@
 #include "usart.h"
 //Serial1
 
-unsigned short readserial1(){
-    unsigned short b8=((UCSR1B&(1<<RXB81))<<7);
-    return b8|UDR1;
-}
-
 char isbyteavaiable1(){
     return (UCSR1A&0B10000000)>>RXC1;
 }
@@ -68,42 +63,6 @@ void writeserial1(unsigned short data){
     unsigned char bit=(data>>8);
     if(bit)UCSR1B|=(1<<TXB81);
     else UCSR1B&=~(1<<TXB81);
-}
-
-void usartmode1(char mode){
-    switch (mode){
-        case MODE_ASYNC:
-            UCSR1C&=~((1<<UMSEL11)|(1<<UMSEL10));
-            return;
-        case MODE_SYNC:
-            UCSR1C&=~(1<<UMSEL11);
-            UCSR1C|=(1<<UMSEL10);
-            return;
-        case MODE_MASTER_SPI:
-            UCSR1C|=((1<<UMSEL11)|(1<<UMSEL10));
-            return;
-        default: return;
-    }
-}
-
-void paritymode1(char mode){
-    switch (mode){
-        case PARITY_DISABLE:
-            UCSR1C&=~((1<<UPM11)|(1<<UPM10));
-            return;
-        case PARITY_EVEN:
-            UCSR1C&=~(1<<UPM10);
-            UCSR1C|=(1<<UPM11);
-            return;
-        case PARITY_ODD:
-            UCSR1C|=((1<<UPM11)|(1<<UPM10));
-            return;
-        default: return;
-    }
-}
-
-void use2stopbit1(char use){
-    UCSR1C=(use?UCSR1C|(1<<USBS1):UCSR1C&~(1<<USBS1));
 }
 
 void dimensionofchar1(char dim){

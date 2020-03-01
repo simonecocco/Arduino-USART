@@ -47,29 +47,41 @@
 #define TO_DOWN 0
 #define TO_UP   1
 
+#define SERIAL0 0
+#define SERIAL1 1
+#define SERIAL2 2
+#define SERIAL3 3
+
+#define ONLY_RX 0
+#define ONLY_TX 1
+#define RXTX 2
+
 #ifndef USARTLIB_USART_H
     #define USARTLIB_USART_H
 
-    typedef struct USART{
-        char mode;
-        char parity;
-        char stopbit;
-        char dimension;
-        char baudrate;
-        char doublespeed;
-        char polarity;
-        char rx[2];
-        char tx[2];
-    } usart;
+    typedef struct param{
+        char bufferstat;
+        char frameerror;
+        char bytelost;
+        char parityerror;
+        char dataavaiable;
+    } usartstat;
 
     /**
-     * legge il dato in arrivo
-     * @return il contenuto del registro UDRn
+     * legge il dato nella porta
+     * @param portn (se dovesse mancare serve che venga
+     *              dichiarata una costante "def_serial"
+     *              con il numero della porta)
+     * @return
      */
-    unsigned short readserial0();
-    unsigned short readserial1();
-    unsigned short readserial2();
-    unsigned short readserial3();
+    unsigned short read(char portn);
+    unsigned short read();
+
+    /**
+     * legge il dato nella porta se la condizione è vera
+     */
+     unsigned short readif(char condiction,char portn);
+     unsigned short readif(char condiction);
 
     /**
      * @return 1 se c'è un byte pronto alla lettura
@@ -78,6 +90,9 @@
     char isbyteavaiable1();
     char isbyteavaiable2();
     char isbyteavaiable3();
+
+    usartstat status(char portn);
+    usartstat status();
 
     /**
      * @return 1 se il dato è stato completamente inviato
@@ -148,31 +163,26 @@
     void writeserial3(unsigned short data);
 
     /**
-     * va a determinare la modalità
-     * @param mode costante definita da MODE_x
+     * importa la modalità di utilizzo della porta
+     * @param portn
+     * @param mode
      */
-    void usartmode0(char mode);
-    void usartmode1(char mode);
-    void usartmode2(char mode);
-    void usartmode3(char mode);
+    void setusartmode(char portn,char mode);
+    void setusartmode(char mode);
 
     /**
      * va a determinare la modalità
      * @param mode costante definita da PARITY_x
      */
-    void paritymode0(char mode);
-    void paritymode1(char mode);
-    void paritymode2(char mode);
-    void paritymode3(char mode);
+    void setparity(char portn,char mode);
+    void setparity(char mode);
 
     /**
      * decidi se usare uno o due bit di stop
      * @param use True per usarne 2, False per usarne 1
      */
-    void use2stopbit0(char use);
-    void use2stopbit1(char use);
-    void use2stopbit2(char use);
-    void use2stopbit3(char use);
+    void setstopmode(char portn,char mode);
+    void setstopmode(char mode);
 
     /**
      * imposta la dimensione del carattere
@@ -210,4 +220,12 @@
     void setserial1(usart *config);
     void setserial2(usart *config);
     void setserial3(usart *config);
+
+    /**
+     * configura inizialmente una porta seriale
+     * @param portn il numero della porta
+     * @param mode la modalità di connessione
+     */
+    void connect(char portn,char mode);
+    void connect(char mode);
 #endif //USARTLIB_USART_H
