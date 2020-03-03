@@ -7,13 +7,6 @@
     #define False (char)0
 #endif
 
-#define STATUS_BUFFER         0
-#define STATUS_FRAMEERROR     1
-#define STATUS_LOSTBYTE       2
-#define STATUS_PARITYERROR    3
-#define STATUS_DOUBLESPEED    4
-#define STATUS_MULTIPROCESSOR 5
-
 #define MODE_ASYNC      0
 #define MODE_SYNC       1
 #define MODE_MASTER_SPI 2
@@ -65,6 +58,7 @@
         char bytelost;
         char parityerror;
         char dataavaiable;
+        char sended;
     } usartstat;
 
     /**
@@ -86,31 +80,8 @@
     /**
      * @return 1 se c'è un byte pronto alla lettura
      */
-    char isbyteavaiable0();
-    char isbyteavaiable1();
-    char isbyteavaiable2();
-    char isbyteavaiable3();
-
     usartstat status(char portn);
     usartstat status();
-
-    /**
-     * @return 1 se il dato è stato completamente inviato
-     */
-    char issended0();
-    char issended1();
-    char issended2();
-    char issended3();
-
-    /**
-     * legge un determinato bit di stato
-     * @param status costante definita da define STATUS_x
-     * @return 1 o 0 a seconda del bit
-     */
-    char getusartstatus0(char status);
-    char getusartstatus1(char status);
-    char getusartstatus2(char status);
-    char getusartstatus3(char status);
 
     /**
      * imposta la ricezione
@@ -188,10 +159,8 @@
      * imposta la dimensione del carattere
      * @param dim costante definita da DIM_xb
      */
-    void dimensionofchar0(char dim);
-    void dimensionofchar1(char dim);
-    void dimensionofchar2(char dim);
-    void dimensionofchar3(char dim);
+    void wordlen(char portn,char dim);
+    void wordlen(char dim);
 
     /**
      * decide quando deve campionare il bit
@@ -207,10 +176,8 @@
      * @param bps velocità di baud rate BPS_x
      * @param speedx2 imposta se la velocità deve essere raddoppiata
      */
-    void setbaudrate0(char bps,char speedx2);
-    void setbaudrate1(char bps,char speedx2);
-    void setbaudrate2(char bps,char speedx2);
-    void setbaudrate3(char bps,char speedx2);
+    void speed(char portn,char bps,char speedx2);
+    void speed(char bps);
 
     /**
      * imposta la porta con una sola istruzione

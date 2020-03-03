@@ -1,30 +1,5 @@
 #include "usart.h"
 //Serial3
-char isbyteavaiable3(){
-    return (UCSR3A&0B10000000)>>RXC3;
-}
-
-char issended3(){
-    return (UCSR3A&0B01000000)>>TXC3;
-}
-
-char getusartstatus3(char status){
-    switch(status){
-        case STATUS_BUFFER:
-            return (UCSR3A&0B00100000)>>UDRE3;
-        case STATUS_FRAMEERROR:
-            return (UCSR3A&0B00010000)>>FE3;
-        case STATUS_LOSTBYTE:
-            return (UCSR3A&0B00001000)>>DOR3;
-        case STATUS_PARITYERROR:
-            return (UCSR3A&0B00000100)>>UPE3;
-        case STATUS_DOUBLESPEED:
-            return (UCSR3A&0B00000010)>>U2X3;
-        case STATUS_MULTIPROCESSOR:
-            return (UCSR3A&0B00000001)>>MPCM3;
-        default: return (char)0;
-    }
-}
 
 void setrx3(char enablepin,char enableinterrupt){
     if(enableinterrupt){
@@ -64,85 +39,9 @@ void writeserial3(unsigned short data){
     else UCSR3B&=~(1<<TXB83);
 }
 
-void dimensionofchar3(char dim){
-    switch(dim){
-        case DIM_5b:
-            UCSR3B&=~(1<<UCSZ32);
-            UCSR3C&=~(1<<UCSZ31);
-            UCSR3C&=~(1<<UCSZ30);
-            return;
-        case DIM_6b:
-            UCSR3B&=~(1<<UCSZ32);
-            UCSR3C&=~(1<<UCSZ31);
-            UCSR3C|=(1<<UCSZ30);
-            return;
-        case DIM_7b:
-            UCSR3B&=~(1<<UCSZ32);
-            UCSR3C|=(1<<UCSZ31);
-            UCSR3C&=~(1<<UCSZ30);
-            return;
-        case DIM_8b:
-            UCSR3B&=~(1<<UCSZ32);
-            UCSR3C|=(1<<UCSZ31);
-            UCSR3C|=(1<<UCSZ30);
-            return;
-        case DIM_9b:
-            UCSR3B|=(1<<UCSZ32);
-            UCSR3C|=(1<<UCSZ31);
-            UCSR3C|=(1<<UCSZ30);
-            return;
-        default: return;
-    }
-}
-
 void clockpolarity3(char polarity){
     if(polarity)UCSR3C|=(1<<UCPOL3);
     else UCSR3C&=~(1<<UCPOL3);
-}
-
-void setbaudrate3(char bps,char speedx2){
-    unsigned short code=0;
-    switch(bps){
-        case BPS_2400:
-            code=speedx2?832:416;
-            break;
-        case BPS_4800:
-            code=speedx2?416:207;
-            break;
-        case BPS_9600:
-            code=speedx2?207:103;
-            break;
-        case BPS_14400:
-            code=speedx2?138:68;
-            break;
-        case BPS_19200:
-            code=speedx2?103:51;
-            break;
-        case BPS_28800:
-            code=speedx2?68:34;
-            break;
-        case BPS_38400:
-            code=speedx2?51:25;
-            break;
-        case BPS_57600:
-            code=speedx2?34:16;
-            break;
-        case BPS_76800:
-            code=speedx2?25:12;
-            break;
-        case BPS_115200:
-            code=speedx2?16:8;
-            break;
-        case BPS_230400:
-            code=speedx2?8:3;
-            break;
-        case BPS_250000:
-            code=speedx2?7:3;
-            break;
-        default: return;
-    }
-    UBRR3H=code>>8;
-    UBRR3L=code;
 }
 
 void setserial3(usart *config){

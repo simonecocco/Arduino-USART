@@ -60,15 +60,238 @@ usartstat status(char portn){
     usartstat param;
     switch (portn){
         case 0:
+            param=(usartstat){
+                    .bufferstat=(UCSR0A&0B00100000)>>UDRE0,
+                    .frameerror=(UCSR0A&0B00010000)>>FE0,
+                    .bytelost=(UCSR0A&0B00001000)>>DOR0,
+                    .parityerror=(UCSR0A&0B00000100)>>UPE0,
+                    .dataavaiable=(UCSR0A&0B10000000)>>RXC0,
+                    .sended=(UCSR0A&0B01000000)>>TXC0
+            };
             break;
         case 1:
+            param=(usartstat){
+                    .bufferstat=(UCSR1A&0B00100000)>>UDRE1,
+                    .frameerror=(UCSR1A&0B00010000)>>FE1,
+                    .bytelost=(UCSR1A&0B00001000)>>DOR1,
+                    .parityerror=(UCSR1A&0B00000100)>>UPE1,
+                    .dataavaiable=(UCSR1A&0B10000000)>>RXC1,
+                    .sended=(UCSR1A&0B01000000)>>TXC1
+            };
             break;
         case 2:
+            param=(usartstat){
+                    .bufferstat=(UCSR2A&0B00100000)>>UDRE2,
+                    .frameerror=(UCSR2A&0B00010000)>>FE2,
+                    .bytelost=(UCSR2A&0B00001000)>>DOR2,
+                    .parityerror=(UCSR2A&0B00000100)>>UPE2,
+                    .dataavaiable=(UCSR2A&0B10000000)>>RXC2,
+                    .sended=(UCSR2A&0B01000000)>>TXC2
+            };
             break;
         default: //3
-
+            param=(usartstat){
+                    .bufferstat=(UCSR3A&0B00100000)>>UDRE3,
+                    .frameerror=(UCSR3A&0B00010000)>>FE3,
+                    .bytelost=(UCSR3A&0B00001000)>>DOR3,
+                    .parityerror=(UCSR3A&0B00000100)>>UPE3,
+                    .dataavaiable=(UCSR3A&0B10000000)>>RXC3,
+                    .sended=(UCSR3A&0B01000000)>>TXC3
+            };
     }
     return param;
+}
+
+void speed(char bps){
+#ifndef def_serial
+#define def_serial 0
+#endif
+    speed(def_serial,bps,False);
+}
+void speed(char portn,char bps,char speedx2){
+    unsigned short code=0;
+    switch(bps){
+        case BPS_2400:
+            code=speedx2?832:416;
+            break;
+        case BPS_4800:
+            code=speedx2?416:207;
+            break;
+        case BPS_9600:
+            code=speedx2?207:103;
+            break;
+        case BPS_14400:
+            code=speedx2?138:68;
+            break;
+        case BPS_19200:
+            code=speedx2?103:51;
+            break;
+        case BPS_28800:
+            code=speedx2?68:34;
+            break;
+        case BPS_38400:
+            code=speedx2?51:25;
+            break;
+        case BPS_57600:
+            code=speedx2?34:16;
+            break;
+        case BPS_76800:
+            code=speedx2?25:12;
+            break;
+        case BPS_115200:
+            code=speedx2?16:8;
+            break;
+        case BPS_230400:
+            code=speedx2?8:3;
+            break;
+        case BPS_250000:
+            code=speedx2?7:3;
+            break;
+        default: return;
+    }
+    switch (portn){
+        case 0:
+            UBRR0H=code>>8;
+            UBRR0L=code;
+            break;
+        case 1:
+            UBRR1H=code>>8;
+            UBRR1L=code;
+            break;
+        case 2:
+            UBRR2H=code>>8;
+            UBRR2L=code;
+            break;
+        default: //3
+            UBRR3H=code>>8;
+            UBRR3L=code;
+    }
+}
+
+void wordlen(char dim){
+#ifndef def_serial
+#define def_serial 0
+#endif
+    wordlen(def_serial,dim);
+}
+void wordlen(char portn,char dim){
+    switch (portn){
+        case 0:
+            switch(dim){
+                case DIM_5b:
+                    UCSR0B&=~(1<<UCSZ02);
+                    UCSR0C&=~(1<<UCSZ01);
+                    UCSR0C&=~(1<<UCSZ00);
+                    return;
+                case DIM_6b:
+                    UCSR0B&=~(1<<UCSZ02);
+                    UCSR0C&=~(1<<UCSZ01);
+                    UCSR0C|=(1<<UCSZ00);
+                    return;
+                case DIM_7b:
+                    UCSR0B&=~(1<<UCSZ02);
+                    UCSR0C|=(1<<UCSZ01);
+                    UCSR0C&=~(1<<UCSZ00);
+                    return;
+                case DIM_8b:
+                    UCSR0B&=~(1<<UCSZ02);
+                    UCSR0C|=(1<<UCSZ01);
+                    UCSR0C|=(1<<UCSZ00);
+                    return;
+                case DIM_9b:
+                    UCSR0B|=(1<<UCSZ02);
+                    UCSR0C|=(1<<UCSZ01);
+                    UCSR0C|=(1<<UCSZ00);
+                    return;
+            }
+            break;
+        case 1:
+            switch(dim){
+                case DIM_5b:
+                    UCSR1B&=~(1<<UCSZ12);
+                    UCSR1C&=~(1<<UCSZ11);
+                    UCSR1C&=~(1<<UCSZ10);
+                    return;
+                case DIM_6b:
+                    UCSR1B&=~(1<<UCSZ12);
+                    UCSR1C&=~(1<<UCSZ11);
+                    UCSR1C|=(1<<UCSZ10);
+                    return;
+                case DIM_7b:
+                    UCSR1B&=~(1<<UCSZ12);
+                    UCSR1C|=(1<<UCSZ11);
+                    UCSR1C&=~(1<<UCSZ10);
+                    return;
+                case DIM_8b:
+                    UCSR1B&=~(1<<UCSZ12);
+                    UCSR1C|=(1<<UCSZ11);
+                    UCSR1C|=(1<<UCSZ10);
+                    return;
+                case DIM_9b:
+                    UCSR1B|=(1<<UCSZ12);
+                    UCSR1C|=(1<<UCSZ11);
+                    UCSR1C|=(1<<UCSZ10);
+                    return;
+            }
+            break;
+        case 2:
+            switch(dim){
+                case DIM_5b:
+                    UCSR2B&=~(1<<UCSZ22);
+                    UCSR2C&=~(1<<UCSZ21);
+                    UCSR2C&=~(1<<UCSZ20);
+                    return;
+                case DIM_6b:
+                    UCSR2B&=~(1<<UCSZ22);
+                    UCSR2C&=~(1<<UCSZ21);
+                    UCSR2C|=(1<<UCSZ20);
+                    return;
+                case DIM_7b:
+                    UCSR2B&=~(1<<UCSZ22);
+                    UCSR2C|=(1<<UCSZ21);
+                    UCSR2C&=~(1<<UCSZ20);
+                    return;
+                case DIM_8b:
+                    UCSR2B&=~(1<<UCSZ22);
+                    UCSR2C|=(1<<UCSZ21);
+                    UCSR2C|=(1<<UCSZ20);
+                    return;
+                case DIM_9b:
+                    UCSR2B|=(1<<UCSZ22);
+                    UCSR2C|=(1<<UCSZ21);
+                    UCSR2C|=(1<<UCSZ20);
+                    return;
+            }
+            break;
+        default: //3
+            switch(dim){
+                case DIM_5b:
+                    UCSR3B&=~(1<<UCSZ32);
+                    UCSR3C&=~(1<<UCSZ31);
+                    UCSR3C&=~(1<<UCSZ30);
+                    return;
+                case DIM_6b:
+                    UCSR3B&=~(1<<UCSZ32);
+                    UCSR3C&=~(1<<UCSZ31);
+                    UCSR3C|=(1<<UCSZ30);
+                    return;
+                case DIM_7b:
+                    UCSR3B&=~(1<<UCSZ32);
+                    UCSR3C|=(1<<UCSZ31);
+                    UCSR3C&=~(1<<UCSZ30);
+                    return;
+                case DIM_8b:
+                    UCSR3B&=~(1<<UCSZ32);
+                    UCSR3C|=(1<<UCSZ31);
+                    UCSR3C|=(1<<UCSZ30);
+                    return;
+                case DIM_9b:
+                    UCSR3B|=(1<<UCSZ32);
+                    UCSR3C|=(1<<UCSZ31);
+                    UCSR3C|=(1<<UCSZ30);
+                    return;
+            }
+    }
 }
 
 void setstopmode(char mode){
@@ -159,7 +382,6 @@ void setusartmode(char mode){
     setusartmode(def_serial,mode);
 }
 void setusartmode(char portn,char mode){
-    //todo
     unsigned char tmp=0;
     switch (mode){
         case MODE_ASYNC:
@@ -213,6 +435,10 @@ void setusartmode(char portn,char mode){
     }
 }
 
+//todo void _settx(char portn,char enablepin,char enablerout)
+//todo void _setrx(char portn,char enablepin,char enablerout)
+//todo void _enableonemptybuffer(char enable)
+
 void connect(char mode){
 #ifndef def_serial
 #define def_serial 0
@@ -223,6 +449,8 @@ void connect(char portn,char mode){
     setusartmode(portn,MODE_ASYNC);
     setparity(portn,PARITY_DISABLE);
     setstopmode(portn,STOPBIT_1);
+    wordlen(portn,DIM_8b);
+    speed(portn,BPS_9600,False);
     //todo
 }
 
