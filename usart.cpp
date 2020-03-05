@@ -85,7 +85,7 @@ void write(char portn, unsigned short data){
     }
 }
 
-userstat status(){
+usartstat status(){
 #ifndef def_serial
 #define def_serial 0
 #endif
@@ -150,15 +150,15 @@ void clockmode(char portn,char mode){
             else UCSR0C&=~(1<<UCPOL0);
             break;
         case 1:
-            if(polarity)UCSR1C|=(1<<UCPOL1);
+            if(mode)UCSR1C|=(1<<UCPOL1);
             else UCSR1C&=~(1<<UCPOL1);
             break;
         case 2:
-            if(polarity)UCSR2C|=(1<<UCPOL2);
+            if(mode)UCSR2C|=(1<<UCPOL2);
             else UCSR2C&=~(1<<UCPOL2);
             break;
         default: //3
-            if(polarity)UCSR3C|=(1<<UCPOL3);
+            if(mode)UCSR3C|=(1<<UCPOL3);
             else UCSR3C&=~(1<<UCPOL3);
     }
 }
@@ -172,19 +172,19 @@ void _setemptybuffer(char portn,char enable){
             }else UCSR0B&=~(1<<UDRIE0);
             break;
         case 1:
-            if(enableinterrupt){
+            if(enable){
                 UCSR1B|=(1<<UDRIE1);
                 SREG|=0B10000000;
             }else UCSR1B&=~(1<<UDRIE1);
             break;
         case 2:
-            if(enableinterrupt){
+            if(enable){
                 UCSR2B|=(1<<UDRIE2);
                 SREG|=0B1000000;
             }else UCSR2B&=~(1<<UDRIE2);
             break;
         default: //3
-            if(enableinterrupt){
+            if(enable){
                 UCSR3B|=(1<<UDRIE3);
                 SREG|=0B1000000;
             }else UCSR3B&=~(1<<UDRIE3);
@@ -209,7 +209,7 @@ void _setrx(char portn,char enablepin,char enablerout){
             else UCSR1B&=~(1<<RXEN1);
             break;
         case 2:
-            if(enableinterrupt){
+            if(enablerout){
                 UCSR2B|=(1<<RXCIE2);
                 SREG|=0B10000000;
             }else UCSR2B&=~(1<<RXCIE2);
@@ -217,7 +217,7 @@ void _setrx(char portn,char enablepin,char enablerout){
             else UCSR2B&=~(1<<RXEN2);
             break;
         default: //3
-            if(enableinterrupt){
+            if(enablerout){
                 UCSR3B|=(1<<RXCIE3);
                 SREG|=0B10000000;
             }else UCSR3B&=~(1<<RXCIE3);
@@ -228,7 +228,7 @@ void _setrx(char portn,char enablepin,char enablerout){
 void _settx(char portn,char enablepin,char enablerout){
     switch (portn){
         case 0:
-            if(enableinterrupt){
+            if(enablerout){
                 UCSR0B|=(1<<TXCIE0);
                 SREG|=0B10000000;
             }else UCSR0B&=~(1<<TXCIE0);
@@ -236,7 +236,7 @@ void _settx(char portn,char enablepin,char enablerout){
             else UCSR0B&=~(1<<TXEN0);
             break;
         case 1:
-            if(enableinterrupt){
+            if(enablerout){
                 UCSR1B|=(1<<TXCIE1);
                 SREG|=0B10000000;
             }else UCSR1B&=~(1<<TXCIE1);
@@ -244,7 +244,7 @@ void _settx(char portn,char enablepin,char enablerout){
             else UCSR1B&=~(1<<TXEN1);
             break;
         case 2:
-            if(enableinterrupt){
+            if(enablerout){
                 UCSR2B|=(1<<TXCIE2);
                 SREG|=0B10000000;
             }else UCSR2B&=~(1<<TXCIE2);
@@ -252,7 +252,7 @@ void _settx(char portn,char enablepin,char enablerout){
             else UCSR2B&=~(1<<TXEN2);
             break;
         default: //3
-            if(enableinterrupt){
+            if(enablerout){
                 UCSR3B|=(1<<TXCIE3);
                 SREG|=0B10000000;
             }else UCSR3B&=~(1<<TXCIE3);
@@ -609,16 +609,16 @@ void connect(char portn,char mode){
     clockmode(portn,TO_DOWN);
     switch (mode){
         case ONLY_RX:
-            _setrx(True,True);
-            _settx(False,False);
+            _setrx(portn,True,True);
+            _settx(portn,False,False);
             break;
         case ONLY_TX:
-            _setrx(False,False);
-            _settx(True,True);
+            _setrx(portn,False,False);
+            _settx(portn,True,True);
             break;
         default: //RXTX
-            _setrx(True,True);
-            _settx(True,True);
+            _setrx(portn,True,True);
+            _settx(portn,True,True);
     }
     //todo
 }
