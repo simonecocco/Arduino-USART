@@ -78,7 +78,7 @@
      unsigned short readif(char condiction);
 
     /**
-     * @return 1 se c'è un byte pronto alla lettura
+     * todo da fare la descrizione
      */
     usartstat status(char portn);
     usartstat status();
@@ -92,10 +92,7 @@
      * si utilizza ISR(USARTn_RX_vect){}
      * @endcode
      */
-    void setrx0(char enablepin,char enableinterrupt);
-    void setrx1(char enablepin,char enableinterrupt);
-    void setrx2(char enablepin,char enableinterrupt);
-    void setrx3(char enablepin,char enableinterrupt);
+    void _setrx(char portn,char enablepin,char enablerout);
 
     /**
      * imposta la trasmissione
@@ -106,10 +103,7 @@
      * si utilizza ISR(USARTn_TX_vect){}
      * @endcode
      */
-    void settx0(char enablepin,char enableinterrupt);
-    void settx1(char enablepin,char enableinterrupt);
-    void settx2(char enablepin,char enableinterrupt);
-    void settx3(char enablepin,char enableinterrupt);
+    void _settx(char portn,char enablepin,char enablerout);
 
     /**
      * imposta la routine per il buffer vuoto
@@ -119,19 +113,14 @@
      * si utilizza ISR(USARTn_UDRE_vect){}
      * @endcode
      */
-    void onemptybuffer0(char enableinterrupt);
-    void onemptybuffer1(char enableinterrupt);
-    void onemptybuffer2(char enableinterrupt);
-    void onemptybuffer3(char enableinterrupt);
+    void _setemptybuffer(char portn,char enable);
 
     /**
      * scrive sulla porta seriale
      * @param data il dato (puà avere fino a 9 bit)
      */
-    void writeserial0(unsigned short data);
-    void writeserial1(unsigned short data);
-    void writeserial2(unsigned short data);
-    void writeserial3(unsigned short data);
+    void write(char portn, unsigned short data);
+    void write(unsigned short data);
 
     /**
      * importa la modalità di utilizzo della porta
@@ -166,10 +155,8 @@
      * decide quando deve campionare il bit
      * @param polarity fronte di discesa o salita
      */
-    void clockpolarity0(char polarity);
-    void clockpolarity1(char polarity);
-    void clockpolarity2(char polarity);
-    void clockpolarity3(char polarity);
+    void clockmode(char portn,char mode);
+    void clockmode(char mode);
 
     /**
      * imposta la velocità di trasferimento dati
@@ -178,15 +165,6 @@
      */
     void speed(char portn,char bps,char speedx2);
     void speed(char bps);
-
-    /**
-     * imposta la porta con una sola istruzione
-     * @param config insieme di configurazioni
-     */
-    void setserial0(usart *config);
-    void setserial1(usart *config);
-    void setserial2(usart *config);
-    void setserial3(usart *config);
 
     /**
      * configura inizialmente una porta seriale

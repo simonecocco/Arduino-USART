@@ -50,6 +50,41 @@ unsigned short readif(char condiction,char portn){
     return condiction?read(portn):0;
 }
 
+void write(unsigned short data){
+#ifndef def_serial
+#define def_serial 0
+#endif
+    write(def_serial,data);
+}
+void write(char portn, unsigned short data){
+    char bit=0;
+    switch (portn){
+        case 0:
+            UDR0=(unsigned char)data;
+            bit=(data>>8);
+            if(bit)UCSR0B|=(1<<TXB80);
+            else UCSR0B&=~(1<<TXB80);
+            break;
+        case 1:
+            UDR1=(unsigned char)data;
+            bit=(data>>8);
+            if(bit)UCSR1B|=(1<<TXB81);
+            else UCSR1B&=~(1<<TXB81);
+            break;
+        case 2:
+            UDR2=(unsigned char)data;
+            bit=(data>>8);
+            if(bit)UCSR2B|=(1<<TXB82);
+            else UCSR2B&=~(1<<TXB82);
+            break;
+        default: //3
+            UDR3=(unsigned char)data;
+            bit=(data>>8);
+            if(bit)UCSR3B|=(1<<TXB83);
+            else UCSR3B&=~(1<<TXB83);
+    }
+}
+
 userstat status(){
 #ifndef def_serial
 #define def_serial 0
@@ -100,6 +135,130 @@ usartstat status(char portn){
             };
     }
     return param;
+}
+
+void clockmode(char mode){
+#ifndef def_serial
+#define def_serial 0
+#endif
+    clockmode(def_serial,mode);
+}
+void clockmode(char portn,char mode){
+    switch (portn){
+        case 0:
+            if(mode)UCSR0C|=(1<<UCPOL0);
+            else UCSR0C&=~(1<<UCPOL0);
+            break;
+        case 1:
+            if(polarity)UCSR1C|=(1<<UCPOL1);
+            else UCSR1C&=~(1<<UCPOL1);
+            break;
+        case 2:
+            if(polarity)UCSR2C|=(1<<UCPOL2);
+            else UCSR2C&=~(1<<UCPOL2);
+            break;
+        default: //3
+            if(polarity)UCSR3C|=(1<<UCPOL3);
+            else UCSR3C&=~(1<<UCPOL3);
+    }
+}
+
+void _setemptybuffer(char portn,char enable){
+    switch (portn){
+        case 0:
+            if(enable){
+                UCSR0B|=(1<<UDRIE0);
+                SREG|=0B10000000;
+            }else UCSR0B&=~(1<<UDRIE0);
+            break;
+        case 1:
+            if(enableinterrupt){
+                UCSR1B|=(1<<UDRIE1);
+                SREG|=0B10000000;
+            }else UCSR1B&=~(1<<UDRIE1);
+            break;
+        case 2:
+            if(enableinterrupt){
+                UCSR2B|=(1<<UDRIE2);
+                SREG|=0B1000000;
+            }else UCSR2B&=~(1<<UDRIE2);
+            break;
+        default: //3
+            if(enableinterrupt){
+                UCSR3B|=(1<<UDRIE3);
+                SREG|=0B1000000;
+            }else UCSR3B&=~(1<<UDRIE3);
+    }
+}
+void _setrx(char portn,char enablepin,char enablerout){
+    switch (portn){
+        case 0:
+            if(enablerout){
+                UCSR0B|=(1<<RXCIE0);
+                SREG|=0B10000000;
+            }else UCSR0B&=~(1<<RXCIE0);
+            if(enablepin) UCSR0B|=(1<<RXEN0);
+            else UCSR0B&=~(1<<RXEN0);
+            break;
+        case 1:
+            if(enablerout){
+                UCSR1B|=(1<<RXCIE1);
+                SREG|=0B10000000;
+            }else UCSR1B&=~(1<<RXCIE1);
+            if(enablepin) UCSR1B|=(1<<RXEN1);
+            else UCSR1B&=~(1<<RXEN1);
+            break;
+        case 2:
+            if(enableinterrupt){
+                UCSR2B|=(1<<RXCIE2);
+                SREG|=0B10000000;
+            }else UCSR2B&=~(1<<RXCIE2);
+            if(enablepin) UCSR2B|=(1<<RXEN2);
+            else UCSR2B&=~(1<<RXEN2);
+            break;
+        default: //3
+            if(enableinterrupt){
+                UCSR3B|=(1<<RXCIE3);
+                SREG|=0B10000000;
+            }else UCSR3B&=~(1<<RXCIE3);
+            if(enablepin) UCSR3B|=(1<<RXEN3);
+            else UCSR3B&=~(1<<RXEN3);
+    }
+}
+void _settx(char portn,char enablepin,char enablerout){
+    switch (portn){
+        case 0:
+            if(enableinterrupt){
+                UCSR0B|=(1<<TXCIE0);
+                SREG|=0B10000000;
+            }else UCSR0B&=~(1<<TXCIE0);
+            if(enablepin) UCSR0B|=(1<<TXEN0);
+            else UCSR0B&=~(1<<TXEN0);
+            break;
+        case 1:
+            if(enableinterrupt){
+                UCSR1B|=(1<<TXCIE1);
+                SREG|=0B10000000;
+            }else UCSR1B&=~(1<<TXCIE1);
+            if(enablepin) UCSR1B|=(1<<TXEN1);
+            else UCSR1B&=~(1<<TXEN1);
+            break;
+        case 2:
+            if(enableinterrupt){
+                UCSR2B|=(1<<TXCIE2);
+                SREG|=0B10000000;
+            }else UCSR2B&=~(1<<TXCIE2);
+            if(enablepin) UCSR2B|=(1<<TXEN2);
+            else UCSR2B&=~(1<<TXEN2);
+            break;
+        default: //3
+            if(enableinterrupt){
+                UCSR3B|=(1<<TXCIE3);
+                SREG|=0B10000000;
+            }else UCSR3B&=~(1<<TXCIE3);
+            if(enablepin) UCSR3B|=(1<<TXEN3);
+            else UCSR3B&=~(1<<TXEN3);
+    }
 }
 
 void speed(char bps){
@@ -435,10 +594,6 @@ void setusartmode(char portn,char mode){
     }
 }
 
-//todo void _settx(char portn,char enablepin,char enablerout)
-//todo void _setrx(char portn,char enablepin,char enablerout)
-//todo void _enableonemptybuffer(char enable)
-
 void connect(char mode){
 #ifndef def_serial
 #define def_serial 0
@@ -451,6 +606,20 @@ void connect(char portn,char mode){
     setstopmode(portn,STOPBIT_1);
     wordlen(portn,DIM_8b);
     speed(portn,BPS_9600,False);
+    clockmode(portn,TO_DOWN);
+    switch (mode){
+        case ONLY_RX:
+            _setrx(True,True);
+            _settx(False,False);
+            break;
+        case ONLY_TX:
+            _setrx(False,False);
+            _settx(True,True);
+            break;
+        default: //RXTX
+            _setrx(True,True);
+            _settx(True,True);
+    }
     //todo
 }
 
